@@ -2,16 +2,16 @@ import os
 import sys
 try:
     from scapy.all import *
-    import graphviz
 except ImportError as e:
-    if "graphviz" in str(e):
-        print("Error: Graphviz library is not installed. Please install it using pip: pip install graphviz")
-    elif "scapy" in str(e):
-        print("Error: Scapy library is not installed. Please install it using pip: pip install scapy")
-        sys.exit()
-    else:
-        print(f"Error: {e}")
-        sys.exit()
+    print("Error: Scapy library is not installed. Please install it using pip: pip install scapy")
+    sys.exit()
+
+graphviz_installed = False
+try:
+    import graphviz
+    graphviz_installed = True
+except ImportError as e:
+    print("Warning: Graphviz library is not installed. No graph will be created.")
 
 # Disclaimer and terms
 print("------------------------ Packet Sniffer Tool Disclaimer ---------------------------")
@@ -28,21 +28,21 @@ print("5. You will not redistribute or sell this tool without the express permis
 print("6. The author is not responsible for any damages or losses incurred as a result of using this tool.")
 print("7. You will respect the privacy and security of all networks and systems you interact with using this tool.")
 
+print("\n--------------------- Administrative Privileges Disclaimer ------------------------")
+print("This tool requires administrative or superuser privileges to capture network traffic.")
+print("By running this tool with elevated privileges, you acknowledge that you understand the risks")
+print("associated with running software with elevated privileges and agree to use this tool responsibly.")
+
 accept_terms = input("\nDo you accept these terms and conditions? (y/n): ")
 
 if accept_terms.lower() != 'y':
     print("You must accept the terms and conditions before using this tool.")
     sys.exit()
 
-graphviz_installed = True
-try:
+if graphviz_installed:
     dot = graphviz.Digraph(comment='Packet Flow')
-    dot.render('test', format='png')
-    os.remove('test.png')
-except Exception as e:
-    print("Warning: Graphviz system package is not installed or not configured correctly. No graph will be created.")
-    print(f"Error details: {e}")
-    graphviz_installed = False
+else:
+    dot = None
 
 print("\n--------------- Packet Sniffing Tool ---------------")
 
@@ -80,9 +80,6 @@ def packet_sniff(packet):
 
     except Exception as e:
         print(f"Error processing packet: {e}")
-
-if graphviz_installed:
-    dot = graphviz.Digraph(comment='Packet Flow')
 
 # Sniff TCP packets
 sniff(filter="tcp", prn=packet_sniff, store=0, count=10)
