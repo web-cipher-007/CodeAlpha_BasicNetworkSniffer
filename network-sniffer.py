@@ -6,6 +6,8 @@ except ImportError as e:
     print("Error: Scapy library is not installed. Please install it using pip: pip install scapy")
     sys.exit()
 
+import socket
+
 graphviz_installed = False
 try:
     import graphviz
@@ -46,12 +48,20 @@ else:
 
 print("\n--------------- Packet Sniffing Tool ---------------")
 
+# Function to get domain name from IP address
+def get_domain_name(ip_address):
+    try:
+        return socket.gethostbyaddr(ip_address)[0]
+    except socket.herror:
+        return "Unknown"
+
 # Function to analyze and display captured packets
 def packet_sniff(packet):
     try:
         # Extract IP information
         src_ip = packet[IP].src
         dst_ip = packet[IP].dst
+        dst_domain = get_domain_name(dst_ip)
 
         # Determine protocol
         if packet.haslayer(TCP):
@@ -62,7 +72,7 @@ def packet_sniff(packet):
 
             # Display packet information
             output_string = f"Source IP: {src_ip}\n"
-            output_string += f"Destination IP: {dst_ip}\n"
+            output_string += f"Destination IP: {dst_ip} ({dst_domain})\n"
             output_string += f"Protocol: {protocol}\n"
             output_string += f"Source Port: {src_port}\n"
             output_string += f"Destination Port: {dst_port}\n"
@@ -75,7 +85,7 @@ def packet_sniff(packet):
 
             if graphviz_installed:
                 dot.node(src_ip, src_ip)
-                dot.node(dst_ip, dst_ip)
+                dot.node(dst_ip, f"{dst_ip}\n({dst_domain})")
                 dot.edge(src_ip, dst_ip, label=f"TCP {src_port} -> {dst_port}")
 
     except Exception as e:
@@ -89,3 +99,4 @@ if graphviz_installed:
     print("\nResults saved to: packet_sniffer_results.txt and packet_flow.png")
 else:
     print("\nResults saved to: packet_sniffer_results.txt")
+    print("\nProgram successfully executed. Exitting....")
