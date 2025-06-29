@@ -10,7 +10,7 @@ A basic Python-based network packet sniffer that captures and analyzes TCP packe
 ## Requirements
 • Python 3.x<br>
 • Scapy library: `pip install scapy`<br>
-• Graphviz library `pip install graphviz`<br>
+• Graphviz library `pip install graphviz`. In linux, use this command: `sudo apt install python3-graphviz`.<br>
 • Graphviz system package (install from official Graphviz website)<br>
 The tool will capture 10 TCP packets and save the results to a file and generate a graph.<br>
 *Running the tool require admin/superuser privileges.*<br>
