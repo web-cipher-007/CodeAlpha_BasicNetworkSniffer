@@ -1,6 +1,6 @@
 # Packet Sniffer Tool
 A Python-based network packet sniffer that captures and analyzes TCP packets, generating a graph of packet flow using Graphviz.
-<b>Features:</b> <br>
+<b>Features:</b><br>
 Captures and analyzes TCP packets on the network<br>
 Saves packet information to a file (packet_sniffer_results.txt)<br>
 Generates a graph of packet flow using Graphviz (packet_flow.png)<br>
